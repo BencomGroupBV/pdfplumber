@@ -27,6 +27,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 - Access to `y0` and `y1` properties, which were redundant and a bit confusing
 - utils.resize_object, which contained flawed assumptions and wasn't necessary
 
+## [0.5.8] — 2018-03-06
+### Fixed
+- Fix issue #53, in which non-decimalize-able (non_)stroking_color properties were raising errors.
+
 ## [0.5.7] — 2018-01-20
 ### Added
 - `.travis.yml`, but failing on `.to_image()`
