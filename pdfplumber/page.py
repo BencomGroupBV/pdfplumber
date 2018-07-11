@@ -3,6 +3,7 @@ from . import edge_finders
 from .table import TableFinder
 from .container import Container
 from copy import copy
+from functools import lru_cache as cache
 
 from pdfminer.pdftypes import resolve_all
 from six import string_types
@@ -103,14 +104,22 @@ class Page(Container):
             "stroking_color", "non_stroking_color", "stream",
         ]
 
+
+        def conv(item):
+            k, v = item
+            if k in IGNORE:
+                return None
+            elif k in NON_DECIMALIZE or v == None:
+                return (k, v)
+            else:
+                return (k, d(v))
+
         def process_object(obj):
             if hasattr(obj, "_objs"):
                 for child in obj._objs:
                     process_object(child)
             else:
-                attr = dict((k, (v if (k in NON_DECIMALIZE or v == None) else d(v)))
-                    for k, v in obj.__dict__.items()
-                        if k not in IGNORE)
+                attr = dict(filter(None, map(conv, obj.__dict__.items())))
 
                 kind = re.sub(lt_pat, "", obj.__class__.__name__).lower()
 

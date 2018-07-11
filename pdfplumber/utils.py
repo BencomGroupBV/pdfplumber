@@ -5,6 +5,7 @@ import numbers
 from operator import itemgetter
 import itertools
 import six
+from functools import lru_cache as cache
 
 DEFAULT_X_TOLERANCE = 3
 DEFAULT_Y_TOLERANCE = 3
@@ -74,13 +75,11 @@ def decode_psl_list(_list):
     return [ decode_text(value.name) if isinstance(value, PSLiteral) else value
         for value in _list ]
 
-def decimalize(v, q=None):
+@cache(maxsize = int(10e4))
+def _decimalize(v, q = None):
     # If already a decimal, just return itself
     if isinstance(v, Decimal):
         return v
-    # If tuple/list passed, bulk-convert
-    elif isinstance(v, (tuple, list)):
-        return type(v)(decimalize(x, q) for x in v)
     # Convert int-like
     elif isinstance(v, numbers.Integral):
         return Decimal(int(v))
@@ -93,6 +92,13 @@ def decimalize(v, q=None):
             return Decimal(repr(v))
     else:
         raise ValueError("Cannot convert {0} to Decimal.".format(v))
+
+def decimalize(v, q = None):
+    # If tuple/list passed, bulk-convert
+    if isinstance(v, (tuple, list)):
+        return type(v)(decimalize(x, q) for x in v)
+    else:
+        return _decimalize(v, q)
 
 def is_dataframe(collection):
     cls = collection.__class__
