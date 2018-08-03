@@ -310,6 +310,7 @@ Many thanks to the following users who've contributed ideas, features, and fixes
 - [Jeff Barrera](https://github.com/jeffbarrera)
 - [Bob Lannon](https://github.com/boblannon)
 - [Dustin Tindall](https://github.com/dustindall)
+- [@meldonization](https://github.com/meldonization)
 
 ## Contributing
 
