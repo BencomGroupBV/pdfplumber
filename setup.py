@@ -9,8 +9,19 @@ version_ns = {}
 with open(os.path.join(HERE, NAME, "_version.py")) as f:
     exec(f.read(), {}, version_ns)
 
+<<<<<<< HEAD
 with open(os.path.join(HERE, "requirements.txt")) as f:
     base_reqs = f.read().strip().split("\n")
+=======
+base_reqs = [
+    "chardet",
+    "pycryptodome",
+    "unicodecsv>=0.14.1",
+    "pdfminer.six==20181108",
+    "pillow>=3.0.0",
+    "wand"
+]
+>>>>>>> master
 
 setup(
     name=NAME,

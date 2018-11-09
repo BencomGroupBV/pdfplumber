@@ -18,7 +18,8 @@ class Page(Container):
         self.pdf = pdf
         self.page_obj = page_obj
         self.page_number = page_number
-        self.rotation = self.page_obj.attrs.get("Rotate", 0) % 360
+        _rotation = self.decimalize(self.page_obj.attrs.get("Rotate", 0))
+        self.rotation =  _rotation % 360
         self.page_obj.rotate = self.rotation
         self.initial_doctop = self.decimalize(initial_doctop)
 
@@ -94,6 +95,8 @@ class Page(Container):
             "groups",
             "colorspace",
             "fontsize",
+            "ncs",
+            "graphicstate",
             "imagemask",
         ]
 
@@ -228,13 +231,15 @@ class Page(Container):
         filtered.bbox = self.bbox
         return filtered
 
-    def to_image(self, resolution=None):
+    def to_image(self, **conversion_kwargs):
         """
         For conversion_kwargs, see http://docs.wand-py.org/en/latest/wand/image.html#wand.image.Image
         """
         from .display import PageImage, DEFAULT_RESOLUTION
-        res = resolution or DEFAULT_RESOLUTION
-        return PageImage(self, resolution=res)
+        kwargs = dict(conversion_kwargs)
+        if "resolution" not in conversion_kwargs:
+            kwargs["resolution"] = DEFAULT_RESOLUTION
+        return PageImage(self, **kwargs)
 
 class DerivedPage(Page):
     is_original = False
