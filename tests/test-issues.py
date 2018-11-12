@@ -114,9 +114,14 @@ class Test(unittest.TestCase):
         # via https://github.com/jsvine/pdfplumber/pull/88
         path = os.path.join(HERE, "pdfs/pr-88-example.pdf")
         with pdfplumber.open(path) as pdf:
-            first_page = pdf.pages[0]
-            words = first_page.extract_words()
-            print([ w["text"] for w in words ])
-            print(len(words))
+            page = pdf.pages[0]
+            words = page.extract_words(match_fontname = False)
             assert len(words) == 25
+        
+        
+    def test_issue_90(self):
+        path = os.path.join(HERE, "pdfs/issue-90-example.pdf")
+        with pdfplumber.open(path) as pdf:
+            page = pdf.pages[0]
+            words = page.extract_words()
         

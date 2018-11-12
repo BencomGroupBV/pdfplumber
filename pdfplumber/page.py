@@ -100,22 +100,51 @@ class Page(Container):
             "imagemask",
         ]
 
-        NON_DECIMALIZE = [
-            "imagemask", "colorspace", "bits",
-            "text", "font", "fontname", "name", "upright",
-            "object_type", "path", "stroke", "fill", "evenodd",
-            "stroking_color", "non_stroking_color", "stream",
-        ]
+        noop = lambda x: x
+        str_conv = lambda x: str(x or "")
 
+        CONVERSIONS = {
+            # Decimals
+            "adv": d,
+            "height": d,
+            "linewidth": d,
+            "pts": d,
+            "size": d,
+            "srcsize": d,
+            "width": d,
+            "x0": d,
+            "x1": d,
+            "y0": d,
+            "y1": d,
+
+            # Integer
+            "bits": int,
+            "upright": int,
+
+            # Strings
+            "font": str_conv,
+            "fontname": str_conv,
+            "imagemask": noop,
+            "name": str_conv,
+            "object_type": str_conv,
+            "text": str_conv,
+
+            # No conversion
+            "colorspace": noop,
+            "evenodd": noop,
+            "fill": noop,
+            "non_stroking_color": noop,
+            "path": noop,
+            "stream": noop,
+            "stroke": noop,
+            "stroking_color": noop,
+        }
 
         def conv(item):
             k, v = item
             if k in IGNORE:
                 return None
-            elif k in NON_DECIMALIZE or v == None:
-                return (k, v)
-            else:
-                return (k, d(v))
+            return (k, CONVERSIONS[k](resolve_all(v)))
 
         def process_object(obj):
             if hasattr(obj, "_objs"):

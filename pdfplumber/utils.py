@@ -1,6 +1,5 @@
 from pdfminer.utils import PDFDocEncoding
 from pdfminer.psparser import PSLiteral
-from pdfminer.pdftypes import PDFObjRef
 from decimal import Decimal, ROUND_HALF_UP
 import numbers
 from operator import itemgetter
@@ -78,10 +77,6 @@ def decode_psl_list(_list):
 
 @cache(maxsize = int(10e4))
 def _decimalize(v, q = None):
-    # If PDFObjRef, first resolve
-    if isinstance(v, PDFObjRef):
-        return decimalize(v.resolve(), q)
-
     # If already a decimal, just return itself
     if isinstance(v, Decimal):
         return v
